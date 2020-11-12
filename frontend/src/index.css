@@ -16,3 +16,13 @@ h1 {
   font-weight: 600;
 }
 
+.link-to {
+  font-weight: 300;
+  cursor: pointer;
+}
+
+.link-to:hover {
+  font-weight: 600;
+}
+
+
