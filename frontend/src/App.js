@@ -20,7 +20,8 @@ const App = () => {
     <BrowserRouter >
       <Switch>
         <Route exact path={'/'}>
-          {user ? <Home /> : <Redirect to="/login" />}
+          {/* {user ? <Home /> : <Redirect to="/login" />} */}
+          <Home/>
         </Route>
         <Route exact path={'/home'}>
           <PostDisplay />
