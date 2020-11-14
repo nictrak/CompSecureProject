@@ -5,6 +5,7 @@ import Login from './components/login';
 import Register from './components/register';
 import PostTextBox from './components/Post/post.textbox';
 import PostDisplay from './components/Post/post.display';
+import CommentDisplay from './components/Post/comment.display';
 import AuthService from './api/auth.service';
 // import Authentication from './components/authentication'
 
@@ -21,7 +22,7 @@ const App = () => {
       <Switch>
         <Route exact path={'/'}>
           {/* {user ? <Home /> : <Redirect to="/login" />} */}
-          <Home/>
+          <Home />
         </Route>
         <Route exact path={'/home'}>
           <PostDisplay />
