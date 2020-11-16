@@ -14,40 +14,79 @@ app = Flask(__name__)
 guard = security.Guard()
 mongo = database.MongoDB()
 
+
 # register
-
-
-@app.route('/register', methods=['POST'])
+@app.route('/register' , methods = ['POST'])
 def register():
+        req_data = request.get_json(force=True)
+        username = req_data['username']
+        password = req_data['password']
+        encrypted_pwd = guard.hash_password(password)
+        payload = {
+            'username': username,
+            'password': encrypted_pwd,
+            'role': 'user' 
+        }
+        if mongo.add_user(payload):
+            return Response('{}', status=201, mimetype='application/json')
+        return Response('{}', status=400, mimetype='application/json')
 
-    # mongo api
-    username = request.form['username']
-    password = request.form['password']
-    encrypted_pwd = guard.hash_password(password)
-    payload = {
-        'username': username,
-        'password': encrypted_pwd,
-        'role': 'user'
-    }
-    if mongo.add_user(payload):
-        return Response('{}', status=201, mimetype='application/json')
-    return Response('{}', status=400, mimetype='application/json')
 
 # login
-
-
-@app.route('/api/login', methods=['POST'])
+@app.route('/login' , methods = ['POST'])
 def login():
-    data = request.get_json(force=True)
-    username = data['username']
-    password = data['password']
-    encrypted_pwd = guard.hash_password(password)
-    payload = {
-        'username': username,
-        'password': encrypted_pwd
-    }
-    success, data = mongo.login(payload)
-    if success:
+        req_data = request.get_json(force=True)
+        username = req_data['username']
+        password = req_data['password']
+        encrypted_pwd = guard.hash_password(password) 
+        payload = {
+            'username': username,
+            'password': encrypted_pwd
+        }
+        success, data = mongo.login(payload)
+        if success:
+            data['_id'] = str(data['_id'])
+            del data['password']
+            data['token'] = guard.dumps_user(data)
+            return data
+        return Response('{}',status=400, mimetype='application/json')
+
+#post
+@app.route('/post/create' , methods = ['POST'])
+def post_create():
+        req_data = request.get_json(force=True)
+        content = req_data['content']
+        is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+        if not is_pass:
+            return Response('{}', status=401, mimetype='application/json')
+        username = user_data['username']
+        uid = user_data['_id']
+        payload = {
+            'content': content,
+            'username': username,
+            'uid': uid,
+        }
+        if mongo.post(payload):
+            return Response('{}', status=201, mimetype='application/json')
+        return Response('{}', status=400, mimetype='application/json')
+
+@app.route('/post/all' , methods = ['GET'])
+def post_all():
+        is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+        if not is_pass:
+            return Response('{}', status=401, mimetype='application/json')
+        post_list = mongo.get_all_post()
+        for data in post_list:
+            data['_id'] = str(data['_id'])
+        return {'posts': post_list}
+
+@app.route('/post/<string:post_id>' , methods = ['GET'])
+def post_post_id(post_id):
+        is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+        if not is_pass:
+            return Response('{}', status=401, mimetype='application/json')
+        data = mongo.get_one_post(post_id)
+        print(data)
         data['_id'] = str(data['_id'])
         del data['password']
         data['token'] = guard.dumps_user(data)
@@ -55,21 +94,14 @@ def login():
     return Response('{}', status=400, mimetype='application/json')
 
 # post
+@app.route('/post/delete/<post_id>', methods=['DELETE'])
+def post_delete(post_id):
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    mongo.delete_post(post_id)
+    return Response('{}', status=200, mimetype='application/json')
 
-
-@app.route('/post/create', methods=['POST'])
-def post_create():
-    content = request.form['content']
-    username = request.form['username']
-    uid = request.form['uid']
-    payload = {
-        'content': content,
-        'username': username,
-        'uid': uid,
-    }
-    if mongo.post(payload):
-        return Response('{}', status=201, mimetype='application/json')
-    return Response('{}', status=400, mimetype='application/json')
 
 
 @app.route('/post/all', methods=['GET'])
@@ -102,11 +134,15 @@ def post_post_id(post_id):
 
 
 @app.route('/post/comment/add', methods=['POST'])
-def comment_add(post_id):
-    content = request.form['content']
-    username = request.form['username']
-    uid = request.form['uid']
-    pid = request.form['pid']
+def comment_add():
+    req_data = request.get_json(force=True)
+    pid = req_data['pid']
+    content = req_data['content']
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    username = user_data['username']
+    uid = user_data['_id']
     payload = {
         'content': content,
         'username': username,
