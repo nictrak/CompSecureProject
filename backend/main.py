@@ -34,8 +34,9 @@ def register():
 #login
 @app.route('/login' , methods = ['POST'])
 def login():
-        username = request.form['username']
-        password = request.form['password']
+        data = request.get_json(force=True)
+        username = data['username']
+        password = data['password']
         encrypted_pwd = guard.hash_password(password) 
         payload = {
             'username': username,
