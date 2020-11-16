@@ -58,8 +58,8 @@ class MongoDB:
                                  {"$push": {"comments": payload["content"]}})
         return False
 
-    def get_all_post(self)
-        return post_col.find()
+    def get_all_post(self):
+        return self.post_col.find()
 
-    def get_one_post(self, pid)
+    def get_one_post(self, pid):
         return self.post_col.find_one({'_id': pid})

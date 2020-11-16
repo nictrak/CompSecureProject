@@ -54,24 +54,26 @@ def login():
 #post
 @app.route('/post/create' , methods = ['POST'])
 def post_create():
-
-        #mongo api
-
-        return status
+        content = request.form['content']
+        username = request.form['username']
+        uid = request.form['uid']
+        payload = {
+            'content': content,
+            'username': username,
+            'uid': uid,
+        }
+        if mongo.post(payload):
+            return Response('{}', status=201, mimetype='application/json')
+        return Response('{}', status=400, mimetype='application/json')
 
 @app.route('/post/all' , methods = ['GET'])
 def post_all():
-
-        #mongo api
-
-        return []
+        return mongo.get_all_post()
 
 @app.route('/post/<post_id>' , methods = ['GET'])
 def post_post_id(post_id):
+        return mongo.get_one_post(post_id)
 
-        #mongo api
-
-        return user_id , content , create_at , comment_id
 #comment
 @app.route('/post/comment/add', methods=['POST'])
 def post_delete(post_id):
