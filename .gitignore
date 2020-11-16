@@ -115,3 +115,5 @@ create_db.py
 
 # DS_Store
 *.DS_Store
+/backend/.idea
+/backend/venv
