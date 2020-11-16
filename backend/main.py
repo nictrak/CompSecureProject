@@ -4,45 +4,13 @@ print("Use flask here.")
 #return redirect("http://www.example.com", code=302)
 #return redirect('/you_were_redirected')
 
-from flask import Flask, redirect, url_for, request
+from flask import Flask, redirect, url_for, request , Response
 import pymongo
 from database import MongoDB
+mongo = database.MongoDB()
 
 
 app = Flask(__name__)
-
-#test
-"""
-@app.route('/admin')
-def hello_admin():
-    return 'Hello Admin'
-
-@app.route('/guest/<guest>')
-def hello_guest(guest):
-    return 'Hello %s as Guest' % guest
-
-@app.route('/user/<name>')
-def hello_user(name):
-    if name == 'admin':
-        return redirect(url_for('hello_admin'))
-    else:
-        return redirect(url_for('hello_guest', guest = name))
-
-
-@app.route('/success/<name>')
-def success(name):
-    return 'welcome %s' % name
-
-@app.route('/login' , methods = ['POST', 'GET'])
-def login():
-    if request.method == 'POST':
-        user = request.form['nm']
-        return redirect(url_for('success',name = user))
-    else:
-        user = request.args.get('nm')
-        return  redirect(url_for('success',name = user))
-"""
-#test end
 
 #finish-----------------------------------------------------------
 
@@ -70,10 +38,19 @@ def login():
 #post
 @app.route('/post/create' , methods = ['POST'])
 def post_create():
+    # mongo api
+    content = request.form['content']
+    username = request.form['username']
+    uid = request.form['uid']
+    payload = {
+        'content' : content,
+        'username': username,
+        'uid': uid,
+    }
+    if mongo.post(payload):
+        return Response('{}', status=201, mimetype='application/json')
+    return Response('{}', status=400, mimetype='application/json')
 
-        #mongo api
-
-        return status
 
 @app.route('/post/all' , methods = ['GET'])
 def post_all():
