@@ -4,9 +4,10 @@ print("Use flask here.")
 #return redirect("http://www.example.com", code=302)
 #return redirect('/you_were_redirected')
 
-from flask import Flask, redirect, url_for, request
+from flask import Flask, redirect, url_for, request , Response
 import pymongo
 from database import MongoDB
+mongo = database.MongoDB()
 
 
 app = Flask(__name__)
@@ -70,10 +71,19 @@ def login():
 #post
 @app.route('/post/create' , methods = ['POST'])
 def post_create():
+    # mongo api
+    content = request.form['content']
+    username = request.form['username']
+    uid = request.form['uid']
+    payload = {
+        'content' : content,
+        'username': username,
+        'uid': uid,
+    }
+    if mongo.post(payload):
+        return Response('{}', status=201, mimetype='application/json')
+    return Response('{}', status=400, mimetype='application/json')
 
-        #mongo api
-
-        return status
 
 @app.route('/post/all' , methods = ['GET'])
 def post_all():
