@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth/";
+const API_URL = "/api/";
 
 class AuthService {
     login(username, password) {
@@ -10,16 +10,16 @@ class AuthService {
                 password
             })
             .then(response => {
-                if (response.data.accessToken) {
-                    localStorage.setItem("user", JSON.stringify(response.data));
+                if (response.data.token) {
+                    localStorage.setItem('user', JSON.stringify(response.data));
                 }
-
                 return response.data;
             });
     }
 
     logout() {
         localStorage.removeItem("user");
+        window.location.reload()
     }
 
     register(username, password) {
@@ -32,6 +32,15 @@ class AuthService {
     getCurrentUser() {
         return JSON.parse(localStorage.getItem('user'));;
     }
+
+    isModerator() {
+        const user = this.getCurrentUser();
+        if (user && user['token'] && user['role'] === 'moderator')
+            return true
+        return false;
+    }
+
+
 }
 
 export default new AuthService();

@@ -1,4 +1,9 @@
 <<<<<<< HEAD
+||||||| merged common ancestors
+<<<<<<<<< Temporary merge branch 1
+=======
+<<<<<<< HEAD
+>>>>>>> 1d95e77dbe693c1163c550d2dcdf8cf069f90261
 # Logs
 logs
 *.log
@@ -116,7 +121,5 @@ create_db.py
 
 # DS_Store
 *.DS_Store
-=======
 /backend/.idea
 /backend/venv
->>>>>>> backend2
