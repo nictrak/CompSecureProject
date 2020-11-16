@@ -12,4 +12,4 @@ class Guard:
         return self.serializer.dumps(username)
 
     def loads_token(self, token):
-        return self.serializer.loads_unsafe(token)
+        return self.serializer.loads_unsafe(token[7:])
