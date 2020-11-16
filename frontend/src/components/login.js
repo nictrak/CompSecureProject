@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import AuthService from '../api/auth.service'
 
-const Login = () => {
+const Login = props => {
+
+    const { setUser } = props;
 
     const [username, setUsername] = useState("");
 
@@ -21,8 +23,9 @@ const Login = () => {
     const handleLoginButton = (e) => {
         e.preventDefault();
         AuthService.login(username, password).then(
-            () => {
-                window.location.reload();
+            response => {
+                window.location.replace('/')
+                // console.log(localStorage.getItem("user"))
             },
             error => {
                 const resMessage =

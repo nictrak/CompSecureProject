@@ -12,28 +12,29 @@ import AuthService from './api/auth.service';
 
 const App = () => {
 
-  const [user, setUser] = useState(undefined)
+  // const [user, setUser] = useState(undefined)
 
-  useEffect(() => {
-    setUser(AuthService.getCurrentUser())
-  }, [])
+  // useEffect(() => {
+  //   setUser(AuthService.getCurrentUser())
+  // }, [])
 
   return (
     <BrowserRouter >
       <Header />
       <Switch>
         <Route exact path={'/'}>
-          {/* {user ? <Home /> : <Redirect to="/login" />} */}
-          <Home />
+          {localStorage.getItem('user') ? <Home /> : <Redirect to="/login" />}
         </Route>
-        <Route exact path={'/home'}>
+        {/* <Route exact path={'/home'}>
           <PostDisplay />
-        </Route>
+        </Route> */}
         <Route exact path={'/login'}>
-          <Login />
+          {!localStorage.getItem('user') ? <Login /> : <Redirect to="/" />}
+          {/* <Login /> */}
         </Route>
         <Route exact path={'/register'}>
-          <Register />
+          {!localStorage.getItem('user') ? <Register /> : <Redirect to="/" />}
+          {/* <Register /> */}
         </Route>
         <Route exact path={'/post'}>
           <PostTextBox />
