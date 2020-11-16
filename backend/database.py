@@ -8,7 +8,7 @@ AUTH_DATA = "users"
 
 POST_DATA = "posts"
 
-REGISTER_KEYS = ["username", "password", "type"]
+REGISTER_KEYS = ["username", "password", "role"]
 
 LOGIN_KEYS = ["username", "password"]
 
@@ -25,8 +25,8 @@ class MongoDB:
         self.auth_col = self.database[AUTH_DATA]
         self.post_col = self.database[POST_DATA]
 
-    def check_keys(payload, form):
-        if payload.keys() == form:
+    def check_keys(self, payload, form):
+        if set(payload.keys()) == set(form):
             return True
         return False
 
@@ -38,13 +38,11 @@ class MongoDB:
 
     def login(self, payload):
         if not self.check_keys(payload, LOGIN_KEYS):
-            return False
-        if not is_auth_col(payload):
-            return False
+            return False, ""
         temp = list(self.auth_col.find(payload))
-        if len(temp) >= 1:
-            return True
-        return False
+        if len(temp) == 1:
+            return True, temp[0] 
+        return False, ""
 
     def post(self, payload):
         if self.check_keys(payload, POST_KEYS):
@@ -59,3 +57,9 @@ class MongoDB:
             self.post_col.update({"_id": payload["pid"]},
                                  {"$push": {"comments": payload["content"]}})
         return False
+
+    def get_all_post(self)
+        return post_col.find()
+
+    def get_one_post(self, pid)
+        return self.post_col.find_one({'_id': pid})
