@@ -85,39 +85,32 @@ def post_delete(post_id):
     payload = {
         'post_id': post_id
     }
-    if mongo.post(payload):
+    if mongo.post_delete(payload):
         return Response('{}', status=202, mimetype='application/json')
     return Response('{}', status=400, mimetype='application/json')
 
 @app.route('/post/update/<post_id>', methods=['UPDATE'])
-def post_delete(post_id):
+def post_update(post_id):
     # mongo api
 
     return status
 
 #comment
 @app.route('/post/comment/add', methods=['POST'])
-def post_delete(post_id):
-    # mongo api
-
-    return status
-
-@app.route('/post/comment/comment_id', methods=['GET'])
-def post_delete(post_id):
-    # mongo api
-
-    return user_id , content , create_at , post_id
-
-@app.route('/post/comment/delete/comment_id', methods=['DELETE'])
-def post_delete(post_id):
-    # mongo api
-
-    return status
-
-@app.route('/post/comment/add', methods=['UPDATE'])
-def post_delete(post_id):
-    # mongo api
-
+def comment_add(post_id):
+    content = request.form['content']
+    username = request.form['username']
+    uid = request.form['uid']
+    pid = request.form['pid']
+    payload = {
+        'content': content,
+        'username': username,
+        'uid': uid,
+        'pid': pid
+    }
+    if mongo.comment(payload):
+        return Response('{}', status=201, mimetype='application/json')
+    return Response('{}', status=400, mimetype='application/json')
 
 if __name__ == '__main__' :
     app.run(debug= True)
