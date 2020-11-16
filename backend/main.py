@@ -83,6 +83,9 @@ def post_delete(post_id):
 
 @app.route('/api/post/all', methods=['GET'])
 def post_all():
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
     post_list = mongo.get_all_post()
     for data in post_list:
         data['_id'] = str(data['_id'])
@@ -91,6 +94,9 @@ def post_all():
 
 @app.route('/api/post/<post_id>', methods=['GET'])
 def post_post_id(post_id):
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
     data = mongo.get_one_post(post_id)
     data['_id'] = str(data['_id'])
     return data
