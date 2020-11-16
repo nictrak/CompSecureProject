@@ -14,6 +14,8 @@ LOGIN_KEYS = ["username", "password"]
 
 POST_KEYS = ["content","username", "uid"]
 
+POST_DELETE_KEYS = ["pid"]
+
 COMMENT_KEYS = ["content", "pid"]
 
 
@@ -51,7 +53,7 @@ class MongoDB:
             self.post_col.insert_one(real_payload)
             return True
         return False
-
+    
     def comment(self, payload):
         if self.check_keys(payload, COMMENT_KEYS):
             self.post_col.update({"_id": payload["pid"]},
