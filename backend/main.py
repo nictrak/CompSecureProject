@@ -1,15 +1,15 @@
 
+import database
+import security
+from database import MongoDB
+import pymongo
+from flask import Flask, redirect, url_for, request, Response
+import json
 print("Flask start server")
 
-#return redirect("http://www.example.com", code=302)
-#return redirect('/you_were_redirected')
+# return redirect("http://www.example.com", code=302)
+# return redirect('/you_were_redirected')
 
-import json
-from flask import Flask, redirect, url_for, request, Response
-import pymongo
-from database import MongoDB
-import security
-import database
 app = Flask(__name__)
 guard = security.Guard()
 mongo = database.MongoDB()
@@ -88,7 +88,10 @@ def post_post_id(post_id):
         data = mongo.get_one_post(post_id)
         print(data)
         data['_id'] = str(data['_id'])
+        del data['password']
+        data['token'] = guard.dumps_user(data)
         return data
+    return Response('{}', status=400, mimetype='application/json')
 
 # post
 @app.route('/post/delete/<post_id>', methods=['DELETE'])
@@ -99,7 +102,37 @@ def post_delete(post_id):
     mongo.delete_post(post_id)
     return Response('{}', status=200, mimetype='application/json')
 
-#comment
+
+
+@app.route('/post/all', methods=['GET'])
+def post_all():
+    post_list = mongo.get_all_post()
+    for data in post_list:
+        data['_id'] = str(data['_id'])
+    return post_list
+
+
+@app.route('/post/<post_id>', methods=['GET'])
+def post_post_id(post_id):
+    data = mongo.get_one_post(post_id)
+    data['_id'] = str(data['_id'])
+    return data
+
+# post
+
+
+# @app.route('/post/delete/<post_id>', methods=['DELETE'])
+# def post_delete(post_id):
+#     payload = {
+#         'post_id': post_id
+#     }
+#     if mongo.post_delete(payload):
+#         return Response('{}', status=202, mimetype='application/json')
+#     return Response('{}', status=400, mimetype='application/json')
+
+# comment
+
+
 @app.route('/post/comment/add', methods=['POST'])
 def comment_add():
     req_data = request.get_json(force=True)
@@ -120,5 +153,6 @@ def comment_add():
         return Response('{}', status=201, mimetype='application/json')
     return Response('{}', status=400, mimetype='application/json')
 
-if __name__ == '__main__' :
-    app.run(debug= True)
+
+if __name__ == '__main__':
+    app.run(debug=True)
