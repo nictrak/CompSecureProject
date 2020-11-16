@@ -9,17 +9,18 @@ const Feed = () => {
 
     useEffect(() => {
 
-        // UserService.getAllPosts().then(
-        //     response => {
-        //         setPosts(response.data.posts)
-        //     }, error => { console.log(error) })
+        UserService.getAllPosts().then(
+            responses => {
+                console.log('Get all feed', responses)
+                setPosts(responses.data.posts)
+            }, error => { console.log(error) })
 
-        setPosts([
-            { username: 'Test', post_id: 1, timedate: '29 OCT 2020', content: 'Test Post By Nick 1', comments: [{ username: 'Alexandra', comment_id: 1, content: 'Comment Na Ja by someone' }, { username: 'Rosalind', comment_id: 2, content: 'Good!' }] },
-            {
-                username: 'Beth', post_id: 2, timedate: '16 NOV 2020', content: "The gambit's queen", comments: [{ username: 'Benny', comment_id: 3, content: 'You lost!' }, { username: 'Test', comment_id: 4, content: 'Sorry T.T' }]
-            }
-        ])
+        // setPosts([
+        //     { username: 'Test', post_id: 1, timedate: '29 OCT 2020', content: 'Test Post By Nick 1', comments: [{ username: 'Alexandra', comment_id: 1, content: 'Comment Na Ja by someone' }, { username: 'Rosalind', comment_id: 2, content: 'Good!' }] },
+        //     {
+        //         username: 'Beth', post_id: 2, timedate: '16 NOV 2020', content: "The gambit's queen", comments: [{ username: 'Benny', comment_id: 3, content: 'You lost!' }, { username: 'Test', comment_id: 4, content: 'Sorry T.T' }]
+        //     }
+        // ])
     }, [])
 
     return (

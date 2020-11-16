@@ -7,6 +7,8 @@ const API_URL = '/api/post/';
 class UserService {
 
     getAllPosts() {
+        const headers = { headers: authHeader() };
+        console.log(headers)
         return axios.get(API_URL + 'all', { headers: authHeader() });
     }
 
