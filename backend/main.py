@@ -10,7 +10,6 @@ import pymongo
 from database import MongoDB
 import security
 import database
-user_data = {}
 app = Flask(__name__)
 guard = security.Guard()
 mongo = database.MongoDB()
@@ -44,10 +43,9 @@ def login():
         }
         success, data = mongo.login(payload)
         if success:
-            data['token'] = guard.dumps_username(username)
-            user_data[data['token']] = data['role']
             data['_id'] = str(data['_id'])
-            data['password'] = "...."
+            del data['password']
+            data['token'] = guard.dumps_user(data)
             return data
         return Response('{}',status=400, mimetype='application/json')
 
@@ -88,12 +86,6 @@ def post_delete(post_id):
     if mongo.post_delete(payload):
         return Response('{}', status=202, mimetype='application/json')
     return Response('{}', status=400, mimetype='application/json')
-
-@app.route('/post/update/<post_id>', methods=['UPDATE'])
-def post_update(post_id):
-    # mongo api
-
-    return status
 
 #comment
 @app.route('/post/comment/add', methods=['POST'])

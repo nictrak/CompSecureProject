@@ -8,6 +8,8 @@ class Guard:
     def hash_password(self, password):
         return hashlib.sha256(password.encode()).hexdigest()
 
-    def dumps_username(self, username):
+    def dumps_user(self, username):
         return self.serializer.dumps(username)
 
+    def loads_token(self, token):
+        return self.serializer.loads_unsafe(token)
