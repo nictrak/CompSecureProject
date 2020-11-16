@@ -16,7 +16,7 @@ mongo = database.MongoDB()
 
 
 # register
-@app.route('/register' , methods = ['POST'])
+@app.route('/api/register' , methods = ['POST'])
 def register():
         req_data = request.get_json(force=True)
         username = req_data['username']
@@ -33,7 +33,7 @@ def register():
 
 
 # login
-@app.route('/login' , methods = ['POST'])
+@app.route('/api/login' , methods = ['POST'])
 def login():
         req_data = request.get_json(force=True)
         username = req_data['username']
@@ -52,7 +52,7 @@ def login():
         return Response('{}',status=400, mimetype='application/json')
 
 #post
-@app.route('/post/create' , methods = ['POST'])
+@app.route('/api/post/create' , methods = ['POST'])
 def post_create():
         req_data = request.get_json(force=True)
         content = req_data['content']
@@ -70,31 +70,8 @@ def post_create():
             return Response('{}', status=201, mimetype='application/json')
         return Response('{}', status=400, mimetype='application/json')
 
-@app.route('/post/all' , methods = ['GET'])
-def post_all():
-        is_pass, user_data = guard.loads_token(request.headers['Authorization'])
-        if not is_pass:
-            return Response('{}', status=401, mimetype='application/json')
-        post_list = mongo.get_all_post()
-        for data in post_list:
-            data['_id'] = str(data['_id'])
-        return {'posts': post_list}
-
-@app.route('/post/<string:post_id>' , methods = ['GET'])
-def post_post_id(post_id):
-        is_pass, user_data = guard.loads_token(request.headers['Authorization'])
-        if not is_pass:
-            return Response('{}', status=401, mimetype='application/json')
-        data = mongo.get_one_post(post_id)
-        print(data)
-        data['_id'] = str(data['_id'])
-        del data['password']
-        data['token'] = guard.dumps_user(data)
-        return data
-    return Response('{}', status=400, mimetype='application/json')
-
 # post
-@app.route('/post/delete/<post_id>', methods=['DELETE'])
+@app.route('/api/post/delete/<post_id>', methods=['DELETE'])
 def post_delete(post_id):
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
@@ -104,7 +81,7 @@ def post_delete(post_id):
 
 
 
-@app.route('/post/all', methods=['GET'])
+@app.route('/api/post/all', methods=['GET'])
 def post_all():
     post_list = mongo.get_all_post()
     for data in post_list:
@@ -112,7 +89,7 @@ def post_all():
     return post_list
 
 
-@app.route('/post/<post_id>', methods=['GET'])
+@app.route('/api/post/<post_id>', methods=['GET'])
 def post_post_id(post_id):
     data = mongo.get_one_post(post_id)
     data['_id'] = str(data['_id'])
@@ -133,7 +110,7 @@ def post_post_id(post_id):
 # comment
 
 
-@app.route('/post/comment/add', methods=['POST'])
+@app.route('/api/post/comment/add', methods=['POST'])
 def comment_add():
     req_data = request.get_json(force=True)
     pid = req_data['pid']
