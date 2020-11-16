@@ -86,7 +86,7 @@ def post_all():
     post_list = mongo.get_all_post()
     for data in post_list:
         data['_id'] = str(data['_id'])
-    return post_list
+    return {'posts': post_list}
 
 
 @app.route('/api/post/<post_id>', methods=['GET'])
