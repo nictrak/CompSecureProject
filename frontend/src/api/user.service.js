@@ -7,8 +7,6 @@ const API_URL = '/api/post/';
 class UserService {
 
     getAllPosts() {
-        const headers = { headers: authHeader() };
-        console.log(headers)
         return axios.get(API_URL + 'all', { headers: authHeader() });
     }
 
@@ -31,7 +29,7 @@ class UserService {
     }
 
     createComment(post_id, content) {
-        return axios.post(API_URL + 'comment/add', {content: content, pid: post_id }, { headers: authHeader() });
+        return axios.post(API_URL + 'comment/add', { content: content, pid: post_id }, { headers: authHeader() });
         // console.log('message:', content, 'by:', user_id);
     }
 
