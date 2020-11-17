@@ -5,7 +5,7 @@ import CommentDisplay from './comment.display';
 
 const PostDisplay = props => {
 
-    const { username, post_id, timedate, content, comments } = props;
+    const { username, uid, post_id, timedate, content, comments } = props;
 
     const [postContent, setPostContent] = useState(content);
 
@@ -19,7 +19,7 @@ const PostDisplay = props => {
 
     useEffect(() => {
         const user = AuthService.getCurrentUser();
-        setIsEligibleToDoActions(user && user['token'] && (user['role'] === 'moderator' || user['username'] === username))
+        setIsEligibleToDoActions(user && user['token'] && (user['role'] === 'moderator' || user['_id'] === uid))
     }, [])
 
     const [isVisible, setIsVisible] = useState(true)
@@ -40,8 +40,7 @@ const PostDisplay = props => {
         setCommentText(e.target.value)
     }
 
-    const handleCommentOnPost = e => {
-        e.preventDefault();
+    const handleCommentOnPost = () => {
         UserService.createComment(post_id, content).then(response => {
             if (response.status === 'success')
                 setCommentText("")
@@ -55,34 +54,37 @@ const PostDisplay = props => {
         });
     }
 
-    const handlePostContentChange = e => {
-        e.preventDefault();
-        // UserService.updatePost(post_id, user_id, content).then(response => { }, err => {
-        //     const resMessage =
-        //         (error.response &&
-        //             error.response.data &&
-        //             error.response.data.message) ||
-        //         error.message ||
-        //         error.toString();
-        // });
-        setPostContent(editedContent);
+    const handlePostContentChange = () => {
+        // e.preventDefault();
+        UserService.updatePost(post_id, content).then(response => {
+            setPostContent(editedContent);
+        }, error => {
+            const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+        });
         const close_button = document.getElementById("editPostModalCloseButton_" + post_id);
         close_button.click();
     }
 
-    const handleDeletePost = e => {
-        e.preventDefault();
-        // UserService.deletePost(post_id).then(response => { }, error => {
-        //     const resMessage =
-        //         (error.response &&
-        //             error.response.data &&
-        //             error.response.data.message) ||
-        //         error.message ||
-        //         error.toString();
-        // });
-        setIsVisible(false)
-        const close_button = document.getElementById("deletePostModalCloseButton_" + post_id);
-        close_button.click();
+    const handleDeletePost = () => {
+        // e.preventDefault();
+        UserService.deletePost(post_id).then(response => {
+            setIsVisible(false)
+            document.getElementById("deletePostModalCloseButton_" + post_id).click()
+        }, error => {
+            const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+        });
+        // const close_button = document.getElementById("deletePostModalCloseButton_" + post_id).click();
+        // close_button.click();
     }
 
     if (isVisible)
