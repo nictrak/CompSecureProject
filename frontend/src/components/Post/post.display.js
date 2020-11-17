@@ -42,7 +42,7 @@ const PostDisplay = props => {
 
     const handleCommentOnPost = () => {
         UserService.createComment(post_id, commentText).then(response => {
-            if (response.status === 201) {
+            if (response.status === 200) {
                 setCommentText("")
                 window.location.reload()
             }
@@ -131,7 +131,7 @@ const PostDisplay = props => {
                                 </div>
                             </div>
                         </div>
-                        {comments.map(comment => <CommentDisplay key={comment.comment_id} username={comment.username} comment_id={comment.comment_id} content={comment.content} />)}
+                        {comments.map(comment => <CommentDisplay key={comment.cid} post_id={post_id} username={comment.username} comment_id={comment.cid} content={comment.content} />)}
                     </div>
                 </div>
                 <div className="modal fade" id={"editPostModal_" + post_id} tabIndex="-1" aria-labelledby={"editPostModalLabel_" + post_id} aria-hidden="true">

@@ -16,61 +16,61 @@ mongo = database.MongoDB()
 
 
 # register
-@app.route('/api/register' , methods = ['POST'])
+@app.route('/api/register', methods=['POST'])
 def register():
-        req_data = request.get_json(force=True)
-        username = req_data['username']
-        password = req_data['password']
-        encrypted_pwd = guard.hash_password(password)
-        payload = {
-            'username': username,
-            'password': encrypted_pwd,
-            'role': 'user' 
-        }
-        if mongo.add_user(payload):
-            return Response('{}', status=201, mimetype='application/json')
-        return Response('{}', status=400, mimetype='application/json')
+    req_data = request.get_json(force=True)
+    username = req_data['username']
+    password = req_data['password']
+    encrypted_pwd = guard.hash_password(password)
+    payload = {
+        'username': username,
+        'password': encrypted_pwd,
+        'role': 'user'
+    }
+    if mongo.add_user(payload):
+        return Response('{}', status=201, mimetype='application/json')
+    return Response('{}', status=400, mimetype='application/json')
 
 
 # login
-@app.route('/api/login' , methods = ['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
-        req_data = request.get_json(force=True)
-        username = req_data['username']
-        password = req_data['password']
-        encrypted_pwd = guard.hash_password(password) 
-        payload = {
-            'username': username,
-            'password': encrypted_pwd
-        }
-        success, data = mongo.login(payload)
-        if success:
-            data['_id'] = str(data['_id'])
-            del data['password']
-            data['token'] = guard.dumps_user(data)
-            return data
-        return Response('{}',status=400, mimetype='application/json')
+    req_data = request.get_json(force=True)
+    username = req_data['username']
+    password = req_data['password']
+    encrypted_pwd = guard.hash_password(password)
+    payload = {
+        'username': username,
+        'password': encrypted_pwd
+    }
+    success, data = mongo.login(payload)
+    if success:
+        data['_id'] = str(data['_id'])
+        del data['password']
+        data['token'] = guard.dumps_user(data)
+        return data
+    return Response('{}', status=400, mimetype='application/json')
 
-#post
-@app.route('/api/post/create' , methods = ['POST'])
+# post
+
+
+@app.route('/api/post/create', methods=['POST'])
 def post_create():
-        req_data = request.get_json(force=True)
-        content = req_data['content']
-        is_pass, user_data = guard.loads_token(request.headers['Authorization'])
-        if not is_pass:
-            return Response('{}', status=401, mimetype='application/json')
-        username = user_data['username']
-        uid = user_data['_id']
-        payload = {
-            'content': content,
-            'username': username,
-            'uid': uid,
-        }
-        if mongo.post(payload):
-            return Response('{}', status=201, mimetype='application/json')
-        return Response('{}', status=400, mimetype='application/json')
-
-
+    req_data = request.get_json(force=True)
+    content = req_data['content']
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    username = user_data['username']
+    uid = user_data['_id']
+    payload = {
+        'content': content,
+        'username': username,
+        'uid': uid,
+    }
+    if mongo.post(payload):
+        return Response('{}', status=201, mimetype='application/json')
+    return Response('{}', status=400, mimetype='application/json')
 
 
 @app.route('/api/post/all', methods=['GET'])
@@ -95,6 +95,7 @@ def post_post_id(post_id):
 
 # post
 
+
 @app.route('/api/post/delete/<post_id>', methods=['DELETE'])
 def post_delete(post_id):
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
@@ -107,10 +108,11 @@ def post_delete(post_id):
     return Response('{}', status=200, mimetype='application/json')
 
 
-@app.route('/api/post/update/', methods=['PATCH'])
+@app.route('/api/post/update', methods=['PATCH'])
 def post_update():
-    content = request.args.get('content')
-    pid = request.args.get('pid')
+    req_data = request.get_json(force=True)
+    content = req_data['content']
+    pid = req_data['pid']
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
@@ -126,12 +128,10 @@ def post_update():
     return Response('{}', status=400, mimetype='application/json')
 
 
-
-#comment
+# comment
 @app.route('/api/post/comment/add', methods=['POST'])
 def comment_add():
     req_data = request.get_json(force=True)
-    print(req_data)
     pid = req_data['pid']
     content = req_data['content']
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
@@ -152,10 +152,16 @@ def comment_add():
         return Response('{}', status=201, mimetype='application/json')
     return Response('{}', status=400, mimetype='application/json')
 
+
 @app.route('/api/post/comment/delete', methods=['DELETE'])
 def comment_delete():
-    pid = request.args.get('pid')
-    cid = request.args.get('cid')
+    req_data = request.get_json(force=True)
+    print(req_data)
+    pid = req_data['pid']
+    cid = req_data['cid']
+    # pid = request.args.get('pid')
+    # cid = request.args.get('cid')
+    # print(pid, cid)
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
@@ -165,11 +171,13 @@ def comment_delete():
     mongo.delete_comment(pid, cid)
     return Response('{}', status=200, mimetype='application/json')
 
+
 @app.route('/api/post/comment/update', methods=['PATCH'])
 def comment_update():
-    pid = request.args.get('pid')
-    cid = request.args.get('cid')
-    content = request.args.get('content')
+    req_data = request.get_json(force=True)
+    content = req_data['content']
+    pid = req_data['pid']
+    cid = req_data['cid']
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
@@ -184,6 +192,7 @@ def comment_update():
     if mongo.update_comment(payload):
         return Response('{}', status=200, mimetype='application/json')
     return Response('{}', status=400, mimetype='application/json')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
