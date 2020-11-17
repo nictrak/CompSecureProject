@@ -101,10 +101,7 @@ def post_delete(post_id):
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
-    payload = {
-        'pid': post_id
-    }
-    mongo.delete_post(payload)
+    mongo.delete_post(post_id)
     return Response('{}', status=200, mimetype='application/json')
 
 
