@@ -100,24 +100,30 @@ def post_delete(post_id):
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
+    access_uid = mongo.get_one_post(post_id)['uid']
+    if access_uid != user_data['_id']:
+        return Response('{}', status=401, mimetype='application/json')
     mongo.delete_post(post_id)
     return Response('{}', status=200, mimetype='application/json')
 
 
-@app.route('/api/post/update/', methods=['UPDATE'])
-def post_update(post_id):
-    req_data = request.get_json(force=True)
-    content = req_data['content']
-    pid = ['pid']
+@app.route('/api/post/update/', methods=['PATCH'])
+def post_update():
+    content = request.args.get('content')
+    pid = request.args.get('pid')
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    access_uid = mongo.get_one_post(pid)['uid']
+    if access_uid != user_data['_id']:
         return Response('{}', status=401, mimetype='application/json')
     payload = {
         'pid': pid,
         'content': content
     }
-    mongo.update_post(payload)
-    return Response('{}', status=200, mimetype='application/json')
+    if mongo.update_post(payload):
+        return Response('{}', status=200, mimetype='application/json')
+    return Response('{}', status=400, mimetype='application/json')
 
 
 
@@ -130,6 +136,9 @@ def comment_add():
     content = req_data['content']
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    access_uid = mongo.get_one_post(pid)['uid']
+    if access_uid != user_data['_id']:
         return Response('{}', status=401, mimetype='application/json')
     username = user_data['username']
     uid = user_data['_id']
@@ -144,36 +153,37 @@ def comment_add():
     return Response('{}', status=400, mimetype='application/json')
 
 @app.route('/api/post/comment/delete', methods=['DELETE'])
-def comment_delete(post_id):
-    req_data = request.get_json(force=True)
-    pid = req_data['pid']
-    cid = req_data['cid']
+def comment_delete():
+    pid = request.args.get('pid')
+    cid = request.args.get('cid')
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
-    payload = {
-        'pid': pid,
-        'cid': cid
-    }
-    mongo.delete_comment(payload)
+    access_uid = mongo.get_one_post(pid)['uid']
+    if access_uid != user_data['_id']:
+        return Response('{}', status=401, mimetype='application/json')
+    mongo.delete_comment(pid, cid)
     return Response('{}', status=200, mimetype='application/json')
 
-@app.route('/api/post/comment/update', methods=['UPDATE'])
-def comment_update(post_id):
-    req_data = request.get_json(force=True)
-    pid = req_data['pid']
-    cid = req_data['cid']
-    content = req_data['content']
+@app.route('/api/post/comment/update', methods=['PATCH'])
+def comment_update():
+    pid = request.args.get('pid')
+    cid = request.args.get('cid')
+    content = request.args.get('content')
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    access_uid = mongo.get_one_post(pid)['uid']
+    if access_uid != user_data['_id']:
         return Response('{}', status=401, mimetype='application/json')
     payload = {
         'pid': pid,
         'cid': cid,
         'content': content
     }
-    mongo.update_comment(payload)
-    return Response('{}', status=200, mimetype='application/json')
+    if mongo.update_comment(payload):
+        return Response('{}', status=200, mimetype='application/json')
+    return Response('{}', status=400, mimetype='application/json')
 
 if __name__ == '__main__':
     app.run(debug=True)
