@@ -1,5 +1,6 @@
 import pymongo
 from bson.objectid import ObjectId
+import hashlib
 
 DATABASE_URL = "mongodb+srv://admin01:8WpQSvdZxdygzSt@cluster0.az2zn.mongodb.net/"
 
@@ -57,8 +58,16 @@ class MongoDB:
     
     def comment(self, payload):
         if self.check_keys(payload, COMMENT_KEYS):
+            for_hash = payload["username"] + payload["content"]
+            comment = {
+                "comment_id": hashlib.sha256(for_hash.encode()).hexdigest(),
+                "content": payload["content"],
+                "uid": payload["uid"],
+                "pid": payload["pid"],
+                "username": payload["username"]
+            }
             self.post_col.update_one({"_id": ObjectId(payload["pid"])},
-                                 {"$push": {"comments": payload["content"]}})
+                                 {"$push": {"comments": comment}})
             return True
         return False
 
