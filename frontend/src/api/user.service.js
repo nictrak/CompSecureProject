@@ -2,7 +2,7 @@ import axios from 'axios';
 import authHeader from './auth-header';
 import AuthService from './auth.service'
 
-const API_URL = '/api/post/';
+const API_URL = 'http://127.0.0.1:5000/api/post/';
 
 class UserService {
 
