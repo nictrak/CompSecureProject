@@ -24,14 +24,6 @@ const PostDisplay = props => {
 
     const [isVisible, setIsVisible] = useState(true)
 
-    // const isEligibleToDoActions = () => {
-    //     const user = AuthService.getCurrentUser();
-    //     // console.log(user)
-    //     if (user && user['token'] && (user['role'] === 'moderator' || user['username'] === username))
-    //         return true;
-    //     return false;
-    // }
-
     const handleEditPostTextChange = e => {
         setEditedContent(e.target.value)
     }
@@ -41,9 +33,11 @@ const PostDisplay = props => {
     }
 
     const handleCommentOnPost = () => {
-        UserService.createComment(post_id, content).then(response => {
-            if (response.status === 'success')
+        UserService.createComment(post_id, commentText).then(response => {
+            if (response.status === 201) {
                 setCommentText("")
+                window.location.reload()
+            }
         }, error => {
             const resMessage =
                 (error.response &&
@@ -56,7 +50,7 @@ const PostDisplay = props => {
 
     const handlePostContentChange = () => {
         // e.preventDefault();
-        UserService.updatePost(post_id, content).then(response => {
+        UserService.updatePost(post_id, editedContent).then(response => {
             setPostContent(editedContent);
         }, error => {
             const resMessage =
@@ -73,8 +67,8 @@ const PostDisplay = props => {
     const handleDeletePost = () => {
         // e.preventDefault();
         UserService.deletePost(post_id).then(response => {
-            setIsVisible(false)
-            document.getElementById("deletePostModalCloseButton_" + post_id).click()
+            if (response.status === 200)
+                setIsVisible(false)
         }, error => {
             const resMessage =
                 (error.response &&
@@ -83,8 +77,8 @@ const PostDisplay = props => {
                 error.message ||
                 error.toString();
         });
-        // const close_button = document.getElementById("deletePostModalCloseButton_" + post_id).click();
-        // close_button.click();
+        const close_button = document.getElementById("deletePostModalCloseButton_" + post_id);
+        close_button.click();
     }
 
     if (isVisible)
@@ -129,7 +123,7 @@ const PostDisplay = props => {
                                 </div>
                             </div>
                         </div>
-                        {comments.map(comment => <CommentDisplay key={comment.comment_id} username={comment.username} comment_id={comment.comment_id} content={comment.content} />)}
+                        {comments.map(comment => <CommentDisplay key={comment.cid} post_id={post_id} username={comment.username} comment_id={comment.cid} content={comment.content} />)}
                     </div>
                 </div>
                 <div className="modal fade" id={"editPostModal_" + post_id} tabIndex="-1" aria-labelledby={"editPostModalLabel_" + post_id} aria-hidden="true">

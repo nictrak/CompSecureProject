@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import UserService from '../../api/user.service';
 import AuthService from '../../api/auth.service';
 
 const CommentDisplay = props => {
 
-    const { username, comment_id, content } = props;
+    const { username, comment_id, post_id, content } = props;
 
     const [commentContent, setCommentContent] = useState(content)
 
@@ -26,30 +27,33 @@ const CommentDisplay = props => {
 
     const handleEditedCommentSaveChange = e => {
         e.preventDefault();
-        // UserService.updateComment(comment_id, user_id, editedComment).then(response => { }, err => {
-        //     const resMessage =
-        //         (error.response &&
-        //             error.response.data &&
-        //             error.response.data.message) ||
-        //         error.message ||
-        //         error.toString();
-        // });
-        setCommentContent(editedComment);
+        UserService.updateComment(comment_id, post_id, editedComment).then(response => {
+            if (response.status === 200)
+                setCommentContent(editedComment);
+        }, error => {
+            const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+        });
         const close_button = document.getElementById("editModalCloseButton_" + comment_id);
         close_button.click();
     }
 
     const handleDeleteComment = () => {
         // e.preventDefault();
-        // UserService.deleteComment(comment_id).then(response => { }, err => {
-        //     const resMessage =
-        //         (error.response &&
-        //             error.response.data &&
-        //             error.response.data.message) ||
-        //         error.message ||
-        //         error.toString();
-        // });
-        setIsVisible(false)
+        UserService.deleteComment(comment_id, post_id).then(response => {
+            setIsVisible(false)
+        }, error => {
+            const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+        });
         const close_button = document.getElementById("deleteModalCloseButton_" + comment_id);
         close_button.click();
     }

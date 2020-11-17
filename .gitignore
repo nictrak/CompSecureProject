@@ -123,3 +123,9 @@ create_db.py
 *.DS_Store
 /backend/.idea
 /backend/venv
+
+# Byte-compiled / optimized / DLL files
+!**/__pycache__/
+*.pyc
+*.pyo
+backend/__pycache__/*
