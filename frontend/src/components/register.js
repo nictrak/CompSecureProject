@@ -32,7 +32,8 @@ const Register = () => {
             password
         ).then(
             response => {
-
+                if (response.status === 201)
+                    window.location.replace('/login')
             },
             error => {
                 const resMessage =

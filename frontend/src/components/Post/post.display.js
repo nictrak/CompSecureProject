@@ -50,7 +50,7 @@ const PostDisplay = props => {
 
     const handlePostContentChange = () => {
         // e.preventDefault();
-        UserService.updatePost(post_id, content).then(response => {
+        UserService.updatePost(post_id, editedContent).then(response => {
             setPostContent(editedContent);
         }, error => {
             const resMessage =
