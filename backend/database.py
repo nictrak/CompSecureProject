@@ -20,7 +20,9 @@ POST_DELETE_KEYS = ["pid"]
 
 COMMENT_KEYS = ["content", "pid", "username", "uid"]
 
+UPDATE_POST_KEYS = ["content", "pid"]
 
+UPDATE_COMMENT_KEYS = ["content", "pid", "cid"]
 
 class MongoDB:
     def __init__(self):
@@ -60,7 +62,7 @@ class MongoDB:
         if self.check_keys(payload, COMMENT_KEYS):
             for_hash = payload["username"] + payload["content"]
             comment = {
-                "comment_id": hashlib.sha256(for_hash.encode()).hexdigest(),
+                "cid": hashlib.sha256(for_hash.encode()).hexdigest(),
                 "content": payload["content"],
                 "uid": payload["uid"],
                 "pid": payload["pid"],
@@ -79,3 +81,27 @@ class MongoDB:
 
     def delete_post(self, pid):
         return self.post_col.delete_one({"_id": ObjectId(pid)})
+
+    def update_post(self, payload):
+        if self.check_keys(payload, UPDATE_POST_KEYS):
+            pid = payload["pid"]
+            content = payload["content"]
+            self.post_col.update_one({'_id': ObjectId(pid)},
+                                     {"$set": {"content": content}})
+            return True
+        return False
+
+    def delete_comment(self, pid, cid):
+        return self.post_col.update_one({'_id': ObjectId(pid)},
+                                        {"$pull": {"comments": {"cid": cid}}})
+
+    def update_comment(self, payload):
+        if self.check_keys(payload, UPDATE_COMMENT_KEYS):
+            pid = payload["pid"]
+            cid = payload["cid"]
+            content = payload["content"]
+            self.post_col.update_one({'_id': ObjectId(pid), "comments.cid": cid},
+                                     {"$set": {"comments.$.content": content}})
+            return True
+        return False
+
