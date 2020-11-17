@@ -25,7 +25,7 @@ class UserService {
     }
 
     updatePost(post_id, content) {
-        return axios.update(API_URL + 'update/' + post_id, { pid: post_id, content: content }, { headers: authHeader() })
+        return axios.update(API_URL + 'update/', { pid: post_id, content: content }, { headers: authHeader() })
     }
 
     createComment(post_id, content) {
@@ -33,12 +33,12 @@ class UserService {
         // console.log('message:', content, 'by:', user_id);
     }
 
-    deleteComment(comment_id) {
-        return axios.delete(API_URL + 'comment/delete/' + comment_id, { headers: authHeader() })
+    deleteComment(comment_id, post_id) {
+        return axios.delete(API_URL + 'comment/delete/' + comment_id, { cid: post_id, pid: post_id }, { headers: authHeader() })
     }
 
-    updateComment(comment_id, content) {
-        return axios.update(API_URL + 'comment/update/' + comment_id, { comment_id: comment_id, content: content }, { headers: authHeader() })
+    updateComment(comment_id, post_id, content) {
+        return axios.update(API_URL + 'comment/update/' + comment_id, { cid: comment_id, content: content, pid: post_id }, { headers: authHeader() })
     }
 }
 

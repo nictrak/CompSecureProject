@@ -73,8 +73,8 @@ const PostDisplay = props => {
     const handleDeletePost = () => {
         // e.preventDefault();
         UserService.deletePost(post_id).then(response => {
+            console.log(post_id)
             setIsVisible(false)
-            document.getElementById("deletePostModalCloseButton_" + post_id).click()
         }, error => {
             const resMessage =
                 (error.response &&
@@ -83,8 +83,8 @@ const PostDisplay = props => {
                 error.message ||
                 error.toString();
         });
-        // const close_button = document.getElementById("deletePostModalCloseButton_" + post_id).click();
-        // close_button.click();
+        const close_button = document.getElementById("deletePostModalCloseButton_" + post_id);
+        close_button.click();
     }
 
     if (isVisible)
