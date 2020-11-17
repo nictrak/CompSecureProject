@@ -41,9 +41,11 @@ const PostDisplay = props => {
     }
 
     const handleCommentOnPost = () => {
-        UserService.createComment(post_id, content).then(response => {
-            if (response.status === 'success')
+        UserService.createComment(post_id, commentText).then(response => {
+            if (response.status === 201) {
                 setCommentText("")
+                window.location.reload()
+            }
         }, error => {
             const resMessage =
                 (error.response &&
