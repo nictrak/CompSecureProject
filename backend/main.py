@@ -70,14 +70,6 @@ def post_create():
             return Response('{}', status=201, mimetype='application/json')
         return Response('{}', status=400, mimetype='application/json')
 
-# post
-@app.route('/api/post/delete/<post_id>', methods=['DELETE'])
-def post_delete(post_id):
-    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
-    if not is_pass:
-        return Response('{}', status=401, mimetype='application/json')
-    mongo.delete_post(post_id)
-    return Response('{}', status=200, mimetype='application/json')
 
 
 
@@ -104,16 +96,18 @@ def post_post_id(post_id):
 # post
 
 
-# @app.route('/post/delete/<post_id>', methods=['DELETE'])
-# def post_delete(post_id):
-#     payload = {
-#         'post_id': post_id
-#     }
-#     if mongo.post_delete(payload):
-#         return Response('{}', status=202, mimetype='application/json')
-#     return Response('{}', status=400, mimetype='application/json')
+@app.route('/api/post/delete/<post_id>', methods=['DELETE'])
+def post_delete(post_id):
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    payload = {
+        'pid': post_id
+    }
+    mongo.delete_post(payload)
+    return Response('{}', status=200, mimetype='application/json')
 
-# comment
+
 
 
 @app.route('/api/post/comment/add', methods=['POST'])
