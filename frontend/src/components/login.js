@@ -41,8 +41,16 @@ const Login = props => {
 
     return (
         <div className='container'>
-            <div className="row justify-content-center" style={{ height: '100vh' }}>
+            <div className="row justify-content-center" style={{ marginTop: '50px' }}>
+                <div className="col-sm-8 col-md-6 col-lg-4 mx-auto text-center">
+
+                </div>
+            </div>
+            <div className="row justify-content-center" style={{ height: '100vh', marginTop: '-6rem' }}>
                 <div className="col-sm-8 col-md-6 col-lg-4 my-auto">
+                    <span class="badge badge-primary mx-2">Moderator</span>
+                    <span class="badge badge-dark"> username: admin01
+                    , password: iamadmi</span>
                     <h1 className='text-primary'>Login</h1>
                     <form>
                         <div className="form-group">
