@@ -163,7 +163,12 @@ def comment_delete():
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
-    access_uid = mongo.get_one_post(pid)['uid']
+    comments = mongo.get_one_post(pid)['comments']
+    access_uid = "dummy"
+    for c in comments:
+        if c['cid'] == cid:
+            access_uid = c['uid']
+            break
     if access_uid != user_data['_id'] and user_data['role'] != "moderator":
         return Response('{}', status=401, mimetype='application/json')
     mongo.delete_comment(pid, cid)
@@ -179,7 +184,12 @@ def comment_update():
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
-    access_uid = mongo.get_one_post(pid)['uid']
+    comments = mongo.get_one_post(pid)['comments']
+    access_uid = "dummy"
+    for c in comments:
+        if c['cid'] == cid:
+            access_uid = c['uid']
+            break
     if access_uid != user_data['_id'] and user_data['role'] != "moderator":
         return Response('{}', status=401, mimetype='application/json')
     payload = {
