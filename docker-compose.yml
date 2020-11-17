@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+ front:
+  build: ./frontend
+  container_name: frontend
+  networks:
+   - mynet
+  ports:
+   - 4000:3000
+ back:
+  build: ./backend
+  container_name: backend
+  networks:
+   - mynet
+  ports:
+   - 5000:5000
+ db:
+   image: 
+   restart: always
+   container_name: db
+   command: 
+   volumes:
+    - 
+   expose:
+    - "3306"
+   environment:
+    MONGODB_ROOT_PASSWORD: password
+    MONGODB_PASSWORD: new_password
+    MONGODB_DATABASE: t
+   networks:
+    - mynet
+networks:
+ mynet: {}

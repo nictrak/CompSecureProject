@@ -95,21 +95,33 @@ def post_post_id(post_id):
 
 # post
 
-
 @app.route('/api/post/delete/<post_id>', methods=['DELETE'])
 def post_delete(post_id):
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
+    mongo.delete_post(post_id)
+    return Response('{}', status=200, mimetype='application/json')
+
+
+@app.route('/api/post/update/', methods=['UPDATE'])
+def post_update(post_id):
+    req_data = request.get_json(force=True)
+    content = req_data['content']
+    pid = ['pid']
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
     payload = {
-        'pid': post_id
+        'pid': pid,
+        'content': content
     }
-    mongo.delete_post(payload)
+    mongo.update_post(payload)
     return Response('{}', status=200, mimetype='application/json')
 
 
 
-
+#comment
 @app.route('/api/post/comment/add', methods=['POST'])
 def comment_add():
     req_data = request.get_json(force=True)
@@ -131,6 +143,37 @@ def comment_add():
         return Response('{}', status=201, mimetype='application/json')
     return Response('{}', status=400, mimetype='application/json')
 
+@app.route('/api/post/comment/delete', methods=['DELETE'])
+def comment_delete(post_id):
+    req_data = request.get_json(force=True)
+    pid = req_data['pid']
+    cid = req_data['cid']
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    payload = {
+        'pid': pid,
+        'cid': cid
+    }
+    mongo.delete_comment(payload)
+    return Response('{}', status=200, mimetype='application/json')
+
+@app.route('/api/post/comment/update', methods=['UPDATE'])
+def comment_update(post_id):
+    req_data = request.get_json(force=True)
+    pid = req_data['pid']
+    cid = req_data['cid']
+    content = req_data['content']
+    is_pass, user_data = guard.loads_token(request.headers['Authorization'])
+    if not is_pass:
+        return Response('{}', status=401, mimetype='application/json')
+    payload = {
+        'pid': pid,
+        'cid': cid,
+        'content': content
+    }
+    mongo.update_comment(payload)
+    return Response('{}', status=200, mimetype='application/json')
 
 if __name__ == '__main__':
     app.run(debug=True)
