@@ -12,9 +12,10 @@ const PostTextBox = () => {
     const handleCreatePostButton = () => {
         // e.preventDefault()
         UserService.createPost(text).then(response => {
-            console.log(response)
-            setText('')
-            alert("Create post successfully.")
+            if (response.status === 201) {
+                setText('')
+                window.location.reload()
+            }
         }, error => {
             const resMessage =
                 (error.response &&

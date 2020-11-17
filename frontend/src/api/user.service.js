@@ -21,7 +21,7 @@ class UserService {
     }
 
     deletePost(post_id) {
-        return axios.delete(API_URL + 'delete/' + post_id, { headers: authHeader() })
+        return axios.delete(API_URL + 'delete', { headers: authHeader(), data: { pid: post_id } })
     }
 
     updatePost(post_id, content) {

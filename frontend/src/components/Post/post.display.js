@@ -24,14 +24,6 @@ const PostDisplay = props => {
 
     const [isVisible, setIsVisible] = useState(true)
 
-    // const isEligibleToDoActions = () => {
-    //     const user = AuthService.getCurrentUser();
-    //     // console.log(user)
-    //     if (user && user['token'] && (user['role'] === 'moderator' || user['username'] === username))
-    //         return true;
-    //     return false;
-    // }
-
     const handleEditPostTextChange = e => {
         setEditedContent(e.target.value)
     }
@@ -42,7 +34,7 @@ const PostDisplay = props => {
 
     const handleCommentOnPost = () => {
         UserService.createComment(post_id, commentText).then(response => {
-            if (response.status === 200) {
+            if (response.status === 201) {
                 setCommentText("")
                 window.location.reload()
             }
@@ -75,8 +67,8 @@ const PostDisplay = props => {
     const handleDeletePost = () => {
         // e.preventDefault();
         UserService.deletePost(post_id).then(response => {
-            console.log(post_id)
-            setIsVisible(false)
+            if (response.status === 200)
+                setIsVisible(false)
         }, error => {
             const resMessage =
                 (error.response &&

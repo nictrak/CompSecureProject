@@ -96,8 +96,10 @@ def post_post_id(post_id):
 # post
 
 
-@app.route('/api/post/delete/<post_id>', methods=['DELETE'])
-def post_delete(post_id):
+@app.route('/api/post/delete', methods=['DELETE'])
+def post_delete():
+    req_data = request.get_json(force=True)
+    post_id = req_data['pid']
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
@@ -156,7 +158,6 @@ def comment_add():
 @app.route('/api/post/comment/delete', methods=['DELETE'])
 def comment_delete():
     req_data = request.get_json(force=True)
-    print(req_data)
     pid = req_data['pid']
     cid = req_data['cid']
     # pid = request.args.get('pid')
