@@ -104,7 +104,7 @@ def post_delete():
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
     access_uid = mongo.get_one_post(post_id)['uid']
-    if access_uid != user_data['_id']:
+    if access_uid != user_data['_id'] and user_data['role'] != "moderator":
         return Response('{}', status=401, mimetype='application/json')
     mongo.delete_post(post_id)
     return Response('{}', status=200, mimetype='application/json')
@@ -119,7 +119,7 @@ def post_update():
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
     access_uid = mongo.get_one_post(pid)['uid']
-    if access_uid != user_data['_id']:
+    if access_uid != user_data['_id'] and user_data['role'] != "moderator":
         return Response('{}', status=401, mimetype='application/json')
     payload = {
         'pid': pid,
@@ -138,9 +138,6 @@ def comment_add():
     content = req_data['content']
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
     if not is_pass:
-        return Response('{}', status=401, mimetype='application/json')
-    access_uid = mongo.get_one_post(pid)['uid']
-    if access_uid != user_data['_id']:
         return Response('{}', status=401, mimetype='application/json')
     username = user_data['username']
     uid = user_data['_id']
@@ -167,7 +164,7 @@ def comment_delete():
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
     access_uid = mongo.get_one_post(pid)['uid']
-    if access_uid != user_data['_id']:
+    if access_uid != user_data['_id'] and user_data['role'] != "moderator":
         return Response('{}', status=401, mimetype='application/json')
     mongo.delete_comment(pid, cid)
     return Response('{}', status=200, mimetype='application/json')
@@ -183,7 +180,7 @@ def comment_update():
     if not is_pass:
         return Response('{}', status=401, mimetype='application/json')
     access_uid = mongo.get_one_post(pid)['uid']
-    if access_uid != user_data['_id']:
+    if access_uid != user_data['_id'] and user_data['role'] != "moderator":
         return Response('{}', status=401, mimetype='application/json')
     payload = {
         'pid': pid,
