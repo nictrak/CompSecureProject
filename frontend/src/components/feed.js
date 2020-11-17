@@ -30,7 +30,7 @@ const Feed = () => {
                 <div className="d-flex flex-column-reverse bd-highlight">
                     {posts.map(post =>
 
-                        <div key={post.post_id} className="bd-highlight"><PostDisplay key={post.post_id} username={post.username} post_id={post.post_id} timedate={post.timedate} content={post.content} comments={post.comments} />
+                        <div key={post._id} className="bd-highlight"><PostDisplay key={post._id} uid={post.uid} username={post.username} post_id={post._id} timedate={post.timedate} content={post.content} comments={post.comments} />
                         </div>
 
                     )}
