@@ -2,7 +2,7 @@ import pymongo
 from bson.objectid import ObjectId
 import hashlib
 
-DATABASE_URL = "mongodb+srv://admin01:8WpQSvdZxdygzSt@cluster0.az2zn.mongodb.net/"
+DATABASE_URL = "mongodb+srv://admin01:8WpQSvdZxdygzSt@cluster0.az2zn.mongodb.net/?ssl=true&ssl_cert_reqs=CERT_NONE"
 
 DATABASE_NAME = "project"
 
@@ -14,7 +14,7 @@ REGISTER_KEYS = ["username", "password", "role"]
 
 LOGIN_KEYS = ["username", "password"]
 
-POST_KEYS = ["content","username", "uid"]
+POST_KEYS = ["content", "username", "uid"]
 
 POST_DELETE_KEYS = ["pid"]
 
@@ -23,6 +23,7 @@ COMMENT_KEYS = ["content", "pid", "username", "uid"]
 UPDATE_POST_KEYS = ["content", "pid"]
 
 UPDATE_COMMENT_KEYS = ["content", "pid", "cid"]
+
 
 class MongoDB:
     def __init__(self):
@@ -47,7 +48,7 @@ class MongoDB:
             return False, ""
         temp = list(self.auth_col.find(payload))
         if len(temp) == 1:
-            return True, temp[0] 
+            return True, temp[0]
         return False, ""
 
     def post(self, payload):
@@ -57,7 +58,7 @@ class MongoDB:
             self.post_col.insert_one(real_payload)
             return True
         return False
-    
+
     def comment(self, payload):
         if self.check_keys(payload, COMMENT_KEYS):
             for_hash = payload["username"] + payload["content"]
@@ -69,7 +70,7 @@ class MongoDB:
                 "username": payload["username"]
             }
             self.post_col.update_one({"_id": ObjectId(payload["pid"])},
-                                 {"$push": {"comments": comment}})
+                                     {"$push": {"comments": comment}})
             return True
         return False
 
@@ -104,4 +105,3 @@ class MongoDB:
                                      {"$set": {"comments.$.content": content}})
             return True
         return False
-

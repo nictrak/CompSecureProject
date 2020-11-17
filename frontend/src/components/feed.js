@@ -11,7 +11,6 @@ const Feed = () => {
 
         UserService.getAllPosts().then(
             responses => {
-                console.log('Get all feed', responses)
                 setPosts(responses.data.posts)
             }, error => { console.log(error) })
 
