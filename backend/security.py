@@ -12,6 +12,6 @@ class Guard:
         return self.serializer.dumps(username)
 
     def loads_token(self, token):
-        if token[0:13] != "6NEVebMx6_bUL":
+        if token[0:14] != "6NEVebMx6_bULg":
             return False, ""
-        return self.serializer.loads_unsafe(token[13:])
+        return self.serializer.loads_unsafe(token[14:])

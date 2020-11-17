@@ -27,11 +27,11 @@ class UserService {
     }
 
     updatePost(post_id, content) {
-        return axios.update(API_URL + 'update/' + post_id, { post_id: post_id, content: content }, { headers: authHeader() })
+        return axios.update(API_URL + 'update/' + post_id, { pid: post_id, content: content }, { headers: authHeader() })
     }
 
-    createComment(user_id, post_id, content) {
-        return axios.post(API_URL + 'comment/add', { user_id: user_id, content: content, post_id: post_id }, { headers: authHeader() });
+    createComment(post_id, content) {
+        return axios.post(API_URL + 'comment/add', {content: content, pid: post_id }, { headers: authHeader() });
         // console.log('message:', content, 'by:', user_id);
     }
 

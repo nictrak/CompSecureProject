@@ -119,6 +119,7 @@ def post_post_id(post_id):
 @app.route('/api/post/comment/add', methods=['POST'])
 def comment_add():
     req_data = request.get_json(force=True)
+    print(req_data)
     pid = req_data['pid']
     content = req_data['content']
     is_pass, user_data = guard.loads_token(request.headers['Authorization'])
