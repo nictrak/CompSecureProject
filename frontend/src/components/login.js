@@ -25,7 +25,7 @@ const Login = props => {
         AuthService.login(username, password).then(
             response => {
                 window.location.replace('/')
-                console.log(localStorage.getItem("user"))
+                // console.log(localStorage.getItem("user"))
             },
             error => {
                 const resMessage =
