@@ -5,12 +5,15 @@ from database import MongoDB
 import pymongo
 from flask import Flask, redirect, url_for, request, Response
 import json
+from flask_cors import CORS
+
 print("Flask start server")
 
 # return redirect("http://www.example.com", code=302)
 # return redirect('/you_were_redirected')
 
 app = Flask(__name__)
+CORS(app)
 guard = security.Guard()
 mongo = database.MongoDB()
 
